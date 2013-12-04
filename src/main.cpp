@@ -9,14 +9,20 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include "Utils.h"
 #include "tinylib.h"
+#include "Road.h"
  
+RiftyConfig rifty_config;
+
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 void error_callback(int err, const char* desc);
 void resize_callback(GLFWwindow* window, int width, int height);
  
 int main() {
- 
+
+  rifty_config.data_path = "/Users/roxlu/Documents/programming/cpp/tests/oculus/install/bin/data/";
+
   glfwSetErrorCallback(error_callback);
  
   if(!glfwInit()) {
@@ -33,6 +39,9 @@ int main() {
   GLFWwindow* win = NULL;
   int w = 1280;
   int h = 720;
+
+  Road road;
+  road.setup();
 
   win = glfwCreateWindow(w, h, "openGL", NULL, NULL);
   if(!win) {
