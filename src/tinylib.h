@@ -38,13 +38,15 @@
   IMAGES
   -----------------------------------------------------------------------------------
   rx_save_png("filename.png", pixels, 640, 480, 3);            - writes a png using lib png
-
+  rx_load_png("filepath.png", &pix, width, height, nchannels)  - load the pixels, width, height and nchannels for the given filepath. make sure to delete pix (which is unsigned char*)
 
   UTILS
   -----------------------------------------------------------------------------------
-  std::string path = rx_get_exe_path();                 - Returns the path to the exe 
+  std::string path = rx_get_exe_path();                  - returns the path to the exe 
+  std::string contents = rx_read_file("filepath.txt");   - returns the contents of the filepath.
 
  */
+
 #ifndef ROXLU_TINYLIB_H
 #define ROXLU_TINYLIB_H
 
@@ -54,6 +56,7 @@
 #include <iterator>
 #include <algorithm>
 #include <string>
+#include <fstream>
 
 #if defined(__APPLE__)
 #  if !defined(__gl_h_)
@@ -434,7 +437,13 @@ static bool rx_save_png(std::string filepath, unsigned char* pixels, int w, int 
 
 }
 
-static bool rx_load_png(std::string filepath, unsigned char** pixels) {
+static bool rx_load_png(std::string filepath, 
+                        unsigned char** pixels,
+                        uint32_t& width,
+                        uint32_t& height,
+                        uint32_t& nchannels
+)
+{
   png_structp png_ptr;
   png_infop info_ptr; 
 
@@ -496,12 +505,12 @@ static bool rx_load_png(std::string filepath, unsigned char** pixels) {
 
   uint32_t stride = 0;
   uint32_t num_bytes = 0;
-  uint32_t width = png_get_image_width(png_ptr, info_ptr);
-  uint32_t height = png_get_image_height(png_ptr, info_ptr);
   uint32_t bit_depth = png_get_bit_depth(png_ptr, info_ptr);
-  uint32_t num_channels = png_get_channels(png_ptr, info_ptr);
   uint32_t color_type = png_get_color_type(png_ptr, info_ptr);
-
+  width = png_get_image_width(png_ptr, info_ptr);
+  height = png_get_image_height(png_ptr, info_ptr);
+  nchannels = png_get_channels(png_ptr, info_ptr);
+  
   if(width == 0 || height == 0) {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
     fclose(fp);
@@ -513,7 +522,7 @@ static bool rx_load_png(std::string filepath, unsigned char** pixels) {
   switch(color_type) {
     case PNG_COLOR_TYPE_PALETTE: {
       png_set_palette_to_rgb(png_ptr);
-      num_channels = 3;
+      nchannels = 3;
       break;
     }
     case PNG_COLOR_TYPE_GRAY: {
@@ -529,11 +538,11 @@ static bool rx_load_png(std::string filepath, unsigned char** pixels) {
   // When transparency is set convert it to a full alpha channel
   if(png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
     png_set_tRNS_to_alpha(png_ptr);
-    num_channels += 1;
+    nchannels += 1;
   }
 
-  stride = width * bit_depth * num_channels / 8;  
-  num_bytes = width * height * bit_depth * num_channels / 8;
+  stride = width * bit_depth * nchannels / 8;  
+  num_bytes = width * height * bit_depth * nchannels / 8;
 
   *pixels = new unsigned char[num_bytes];
   if(!pixels) {
@@ -557,7 +566,7 @@ static bool rx_load_png(std::string filepath, unsigned char** pixels) {
   }
 
   for(size_t i = 0; i < height; ++i) {
-    row_ptrs[i] = (png_bytep) pixels +(i * stride);
+    row_ptrs[i] = (png_bytep)(*pixels) +(i * stride);
   }
 
   png_read_image(png_ptr, row_ptrs);
@@ -567,6 +576,15 @@ static bool rx_load_png(std::string filepath, unsigned char** pixels) {
   png_destroy_read_struct(&png_ptr, &info_ptr, 0);
   fclose(fp);
   return true;
+}
+
+static std::string rx_read_file(std::string filepath) {
+  std::ifstream ifs(filepath.c_str(), std::ios::in);
+  if(!ifs.is_open()) {
+    return "";
+  }
+  std::string str((std::istreambuf_iterator<char>(ifs)) , std::istreambuf_iterator<char>());
+  return str;
 }
 
 #endif

@@ -13,6 +13,8 @@
 		4825BC95184F6CE60098F0AE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4825BC94184F6CE60098F0AE /* OpenGL.framework */; };
 		4825BC97184F6CF10098F0AE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4825BC96184F6CF10098F0AE /* IOKit.framework */; };
 		4825BC9A184F6D600098F0AE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4825BC99184F6D600098F0AE /* main.cpp */; };
+		48FE1D6E184F83050020BB3E /* Perlin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48FE1D6D184F83050020BB3E /* Perlin.cpp */; };
+		48FE1D70184F830B0020BB3E /* Road.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48FE1D6F184F830B0020BB3E /* Road.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,6 +38,8 @@
 		4825BC96184F6CF10098F0AE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		4825BC99184F6D600098F0AE /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../src/main.cpp; sourceTree = "<group>"; };
 		4825BC9B184F76A80098F0AE /* tinylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tinylib.h; path = ../../../src/tinylib.h; sourceTree = "<group>"; };
+		48FE1D6D184F83050020BB3E /* Perlin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Perlin.cpp; path = ../../../src/Perlin.cpp; sourceTree = "<group>"; };
+		48FE1D6F184F830B0020BB3E /* Road.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Road.cpp; path = ../../../src/Road.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 		4825BC80184F6C070098F0AE /* Rifty */ = {
 			isa = PBXGroup;
 			children = (
+				48FE1D6F184F830B0020BB3E /* Road.cpp */,
+				48FE1D6D184F83050020BB3E /* Perlin.cpp */,
 				4825BC99184F6D600098F0AE /* main.cpp */,
 				4825BC9B184F76A80098F0AE /* tinylib.h */,
 			);
@@ -151,7 +157,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4825BC9A184F6D600098F0AE /* main.cpp in Sources */,
+				48FE1D6E184F83050020BB3E /* Perlin.cpp in Sources */,
 				4825BC8F184F6CB30098F0AE /* glxw.c in Sources */,
+				48FE1D70184F830B0020BB3E /* Road.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +206,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = ./../../extern/lib/libglfw3.a;
 				SDKROOT = macosx;
+				SYMROOT = ./build;
 			};
 			name = Debug;
 		};
@@ -235,6 +244,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_LDFLAGS = ./../../extern/lib/libglfw3.a;
 				SDKROOT = macosx;
+				SYMROOT = ./build;
 			};
 			name = Release;
 		};
@@ -246,6 +256,7 @@
 					./../../extern/lib/libpng16.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = ./build;
 			};
 			name = Debug;
 		};
@@ -257,6 +268,7 @@
 					./../../extern/lib/libpng16.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = ./build;
 			};
 			name = Release;
 		};

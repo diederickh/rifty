@@ -3,8 +3,12 @@ cmake_minimum_required(VERSION 2.8)
 set(base_dir ${CMAKE_CURRENT_LIST_DIR}/../../)
 set(extern_dir ${base_dir}/extern/)
 
+set(CMAKE_INSTALL_PREFIX ${base_dir}/install/)
+
 set(source_files 
   ${base_dir}/src/main.cpp
+  ${base_dir}/src/Perlin.cpp
+  ${base_dir}/src/Road.cpp
   ${extern_dir}/src/GLXW/glxw.c
 )
 
@@ -20,6 +24,7 @@ set(libraries
   ${fr_cocoa}
   ${fr_opengl}
   ${fr_iokit}  
+  -lz
 )
 
 include_directories(
@@ -30,5 +35,4 @@ add_executable(rifty ${source_files})
 
 target_link_libraries(rifty ${libraries})
 
-
-  
+install(TARGETS rifty RUNTIME DESTINATION bin)

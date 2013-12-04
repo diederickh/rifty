@@ -7,6 +7,7 @@
  
 #include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include "tinylib.h"
  
@@ -32,8 +33,6 @@ int main() {
   GLFWwindow* win = NULL;
   int w = 1280;
   int h = 720;
- 
-  std::string path = rx_get_exe_path();
 
   win = glfwCreateWindow(w, h, "openGL", NULL, NULL);
   if(!win) {
