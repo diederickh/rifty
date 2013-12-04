@@ -15,6 +15,7 @@ find_library(fr_iokit IOKit)
 
 set(libraries
   ${extern_dir}/lib/libglfw3.a
+  ${extern_dir}/lib/libpng16.a
   ${fr_corefoundation}
   ${fr_cocoa}
   ${fr_opengl}
