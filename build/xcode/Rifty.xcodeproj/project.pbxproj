@@ -35,6 +35,7 @@
 		4825BC94184F6CE60098F0AE /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		4825BC96184F6CF10098F0AE /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		4825BC99184F6D600098F0AE /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../src/main.cpp; sourceTree = "<group>"; };
+		4825BC9B184F76A80098F0AE /* tinylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tinylib.h; path = ../../../src/tinylib.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				4825BC99184F6D600098F0AE /* main.cpp */,
+				4825BC9B184F76A80098F0AE /* tinylib.h */,
 			);
 			path = Rifty;
 			sourceTree = "<group>";
@@ -239,6 +241,10 @@
 		4825BC88184F6C070098F0AE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_LDFLAGS = (
+					./../../extern/lib/libglfw3.a,
+					./../../extern/lib/libpng16.a,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -246,6 +252,10 @@
 		4825BC89184F6C070098F0AE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_LDFLAGS = (
+					./../../extern/lib/libglfw3.a,
+					./../../extern/lib/libpng16.a,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
