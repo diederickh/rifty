@@ -7,6 +7,7 @@
  
 #include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
  
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 void error_callback(int err, const char* desc);
