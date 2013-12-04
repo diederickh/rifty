@@ -9,11 +9,17 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include "Utils.h"
 #include "tinylib.h"
+
+#include "Rifty.h"
+#include "Utils.h"
 #include "Road.h"
+#include "Spline.h"
+
+using namespace glm;
  
 RiftyConfig rifty_config;
+Rifty rifty;
 
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods);
 void error_callback(int err, const char* desc);
@@ -39,7 +45,7 @@ int main() {
   GLFWwindow* win = NULL;
   int w = 1280;
   int h = 720;
-
+ 
   Road road;
   road.setup();
 
@@ -47,6 +53,19 @@ int main() {
   if(!win) {
     glfwTerminate();
     exit(EXIT_FAILURE);
+  }
+
+  Spline<vec3, 3> spline;
+  spline.add(vec3(0.0, 0.0, 0.0));  
+  spline.add(vec3(1.0, 1.0, 0.0));  
+  spline.add(vec3(4.0, 2.0, 0.0));  
+  spline.add(vec3(4.5, 4.0, 1.0));  
+  spline.add(vec3(6.5, 2.4, 3.0));  
+  float p = 0.00;
+  for(int i = 0; i <= 100; ++i) {
+    vec3 v = spline.get(p);
+    printf("%f, %f, %f for %f\n", v[0], v[1], v[2], p);
+    p += 0.01;
   }
  
   glfwSetFramebufferSizeCallback(win, resize_callback);
@@ -62,11 +81,12 @@ int main() {
   while(!glfwWindowShouldClose(win)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    rifty.update();
+    rifty.draw();
  
     glfwSwapBuffers(win);
     glfwPollEvents();
   }
- 
  
   glfwTerminate();
  

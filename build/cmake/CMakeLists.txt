@@ -9,6 +9,8 @@ set(source_files
   ${base_dir}/src/main.cpp
   ${base_dir}/src/Perlin.cpp
   ${base_dir}/src/Road.cpp
+  ${base_dir}/src/Rifty.cpp
+  ${base_dir}/src/Camera.cpp
   ${extern_dir}/src/GLXW/glxw.c
 )
 

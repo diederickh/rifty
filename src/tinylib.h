@@ -1,6 +1,5 @@
 /*
 
-
 --------------------------------------------------------------------------------
       
                                                oooo              
@@ -27,8 +26,17 @@
   rx_translation(0.0f, 0.0f, -4.0f, m);                 - set identity + translate a matrix
   rx_rotation(HALF_PI, 0.0f, 1.0f, 0.0, m);             - get a rotation matrix (angle axis based)
   rx_print_mat4x4(m);                                   - print the contents of a matrix
-  
-  
+
+  VECTOR
+  -----------------------------------------------------------------------------------
+  rx_set_vec3(x, y, z, result);                         - set the values of the vector
+  rx_multiply_vec3(a,b,result);                         - multiply two vectors
+  rx_multiply_vec3(a, 10.0f, result);                   - multiply vector a by 10.0f
+  rx_normalize_vec3(a, result);                         - normalize the given vector
+  rx_cross_vec3(a, b, result);                          - get the cross product between two vectors
+  rx_print_vec3(v);                                     - print the contents of the vector
+  float length = rx_length_vec3(a,b);                   - get the length of the vector
+
   SHADER
   -----------------------------------------------------------------------------------
   vert = rx_create_shader(GL_VERTEX_SHADER, source_char_p);    - create a shader, pass type
@@ -196,7 +204,6 @@ static void rx_rotation(float rad, float x, float y, float z, float* m) {
   m[13] = 0.0f;
   m[14] = 0.0f;
   m[15] = 1.0f;
-
 }
 
 static void rx_print_mat4x4(float* m) {
@@ -205,6 +212,43 @@ static void rx_print_mat4x4(float* m) {
   printf("%0.3f %0.3f %0.3f %0.3f\n", m[2], m[6], m[10], m[14]);
   printf("%0.3f %0.3f %0.3f %0.3f\n", m[3], m[7], m[11], m[15]);
   printf("\n");
+}
+
+static void rx_multiply_vec3(float* a, float* b, float* result) {
+  result[0] = a[0] * b[0];
+  result[1] = a[1] * b[1];
+  result[2] = a[2] * b[2];
+}
+
+static void rx_multiply_vec3(float* a, float v, float* result) {
+  result[0] = a[0] * v;
+  result[1] = a[1] * v;
+  result[2] = a[2] * v;
+}
+
+static float rx_length_vec3(float* a) {
+  return sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+}
+
+static void rx_normalize_vec3(float* a, float* result) {
+  float l = 1.0f / rx_length_vec3(a);
+  rx_multiply_vec3(a, l, result);
+}
+
+static void rx_set_vec3(float x, float y, float z, float* result) {
+  result[0] = x;
+  result[1] = y;
+  result[2] = z;
+}
+
+static void rx_cross_vec3(float* a, float* b, float* result) {
+  result[0] = a[1] * b[2] - a[2] * b[1];
+  result[1] = a[2] * b[0] - a[0] * b[2];
+  result[2] = a[0] * b[1] - a[1] * b[0];
+}
+
+static void rx_print_vec3(float* v) {
+  printf("x: %f, y: %f, z: %f\n", v[0], v[1], v[2]);
 }
 
 static void rx_print_shader_link_info(GLuint shader) {
