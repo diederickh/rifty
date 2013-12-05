@@ -1,3 +1,4 @@
+#include <math.h>
 #include "Rifty.h"
 
 Rifty::Rifty() {
@@ -15,5 +16,5 @@ void Rifty::update() {
 }
 
 void Rifty::draw() {
-  room.draw(cam.pm(), cam.vm());
+  room.draw(cam.pm(), cam.vm(), cam.nm());
 }

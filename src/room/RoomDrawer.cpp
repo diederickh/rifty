@@ -14,6 +14,7 @@ RoomDrawer::RoomDrawer(Room& room)
   ,u_pm(-1)
   ,u_vm(-1)
   ,u_mm(-1)
+  ,u_nm(-1)
 {
 }
 
@@ -30,7 +31,9 @@ bool RoomDrawer::setup() {
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
   glEnableVertexAttribArray(0); // pos
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexP), (GLvoid*)0);
+  glEnableVertexAttribArray(1); // norm
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (GLvoid*)0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexPN), (GLvoid*)12); /* 12 bytes offset */
   
   if(!createShader()) {
     return false;
@@ -44,14 +47,17 @@ bool RoomDrawer::createShader() {
   frag = rx_create_shader(GL_FRAGMENT_SHADER, ROOM_FS);
   prog = rx_create_program(vert, frag);
   glBindAttribLocation(prog, 0, "a_pos");
+  glBindAttribLocation(prog, 1, "a_norm");
   glLinkProgram(prog);
 
   u_pm = glGetUniformLocation(prog, "u_pm");
   u_vm = glGetUniformLocation(prog, "u_vm");
   u_mm = glGetUniformLocation(prog, "u_mm");
+  u_nm = glGetUniformLocation(prog, "u_nm");
   assert(u_pm >= 0);
   assert(u_vm >= 0);
   assert(u_mm >= 0);
+  assert(u_nm >= 0);
 
   return true;
 }
@@ -70,15 +76,16 @@ void RoomDrawer::update() {
                   room.getVertices().getPtr());
 }
 
-void RoomDrawer::draw(float* pm, float* vm, float* mm) {
+void RoomDrawer::draw(float* pm, float* vm, float* nm, float* mm) {
   glBindVertexArray(vao);
   glUseProgram(prog);
   glUniformMatrix4fv(u_pm, 1, GL_FALSE, pm);
   glUniformMatrix4fv(u_vm, 1, GL_FALSE, vm);
   glUniformMatrix4fv(u_mm, 1, GL_FALSE, mm);
+  glUniformMatrix3fv(u_nm, 1, GL_FALSE, nm);
 
   glPointSize(3.0f);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   glDrawArrays(GL_TRIANGLES, 0, room.getVertices().size() );
   //glDrawArrays(GL_POINTS, 0, room.getVertices().size());
 }

@@ -62,7 +62,8 @@ int main() {
     ::exit(EXIT_FAILURE);
   }
 
-  
+  glEnable(GL_DEPTH_TEST);
+
   Road road;
   road.setup();
   rifty.setup();
@@ -81,8 +82,6 @@ int main() {
     p += 0.01;
   }
 #endif
- 
-
  
   while(!glfwWindowShouldClose(win)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

@@ -10,12 +10,16 @@
 #ifndef ROOM_H
 #define ROOM_H
 
+#include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Particles.h"
 #include <room/RoomDrawer.h>
+#include <room/RoomEffect.h>
+#include "Particles.h"
 #include "Vertices.h"
 #include "Types.h"
+
+typedef VertexPN RoomParticleType;
 
 class Room {
  public:
@@ -23,11 +27,11 @@ class Room {
   ~Room();
   bool setup();
   void update();
-  void draw(float* pm, float* vm); /* pm = projection matrix, vm = view matrix */
+  void draw(float* pm, float* vm, float* nm); /* pm = projection matrix, vm = view matrix, nm = normal matrix */
   void rotate(float degrees, float xax, float yax, float zax); /* rotate the room, all in degrees */
 
   Particles& getParticles();
-  Vertices<VertexP>& getVertices();
+  Vertices<RoomParticleType>& getVertices();
   float* mm(); /* returns the model matrix */
 
  private:
@@ -41,15 +45,18 @@ class Room {
   int num_grid; /* number of 'squares' per row/col */
   float grid_size; /* size per grid */
   RoomDrawer drawer;
-  Vertices<VertexP> vertices;
+  Vertices<RoomParticleType> vertices;
   mat4 model_matrix;
+
+  std::vector<RoomEffect*> effects; /* effects that can be applied to the room, room will delete the effects in it's d'tor.  */
+  RoomEffectNoise* effect_noise;
 };
 
 inline Particles& Room::getParticles() {
   return particles;
 }
 
-inline Vertices<VertexP>& Room::getVertices() {
+inline Vertices<RoomParticleType>& Room::getVertices() {
   return vertices;
 }
 

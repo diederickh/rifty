@@ -14,6 +14,7 @@ set(source_files
   ${base_dir}/src/Particles.cpp
   ${base_dir}/src/room/Room.cpp
   ${base_dir}/src/room/RoomDrawer.cpp
+  ${base_dir}/src/room/RoomEffect.cpp
   ${extern_dir}/src/GLXW/glxw.c
 )
 

@@ -3,12 +3,13 @@
 #include <glm/gtx/vector_access.hpp> 
 
 Room::Room() 
-  :room_size(10.0f)
-  ,num_grid(10)
+  :room_size(15.0f)
+  ,num_grid(20)
   ,grid_size(room_size / num_grid)
   ,drawer(*this)
+  ,effect_noise(NULL)
 {
-  
+  printf("room size: %f\n", room_size);
 }
 
 Room::~Room() {
@@ -23,11 +24,16 @@ bool Room::setup() {
     return false;
   }
 
+  effect_noise = new RoomEffectNoise(*this);
+
   return true;
 }
 
 void Room::update() {
-  this->rotate(0.5f, 0.0f, 1.0f, 0.0f);
+
+  effect_noise->update(1.0f/60.0f);
+
+  rotate(0.4f, 0.0f, 1.0f, 0.0f);
 
   //particles.addForce(vec3(0.0, 0.0, -1));
   particles.update(1.0f/60.0f);
@@ -35,8 +41,8 @@ void Room::update() {
   drawer.update();
 }
 
-void Room::draw(float* pm, float* vm) {
-  drawer.draw(pm, vm, mm());
+void Room::draw(float* pm, float* vm, float* nm) {
+  drawer.draw(pm, vm, nm, mm());
 }
 
 void Room::createRoom() {                      
@@ -48,43 +54,39 @@ void Room::createRoom() {
     particles.push_back(p);
   }
 
-  // disable the corners
-  particles[0]->enabled = false; // bottom left
-  particles[num_grid-1]->enabled = false; // bottom right 
-  particles[(num_grid*num_grid)-1]->enabled = false; // top right  
-  particles[(num_grid*num_grid) - num_grid]->enabled = false;  // top left
-
   // fill our vertex buffer.
-  vertices.assign(6 * (num_grid * num_grid * 6), VertexP());
+  vertices.assign(6 * (num_grid * num_grid * 6), RoomParticleType());
 
   // position before creating springs
   position();
 
-  // create springs: backwall
   size_t offset = 0;
-  for(size_t j = 0; j < num_grid - 1; ++j) {
-    for(size_t i = 0; i < num_grid - 1; ++i) {
+  for(int k = 0; k < 6; ++k) {
+    for(size_t j = 0; j < num_grid - 1; ++j) {
+      for(size_t i = 0; i < num_grid - 1; ++i) {
 
-      size_t dx_pa = offset + ((j + 0) * num_grid) + (i + 0); // bottom left
-      size_t dx_pb = offset + ((j + 0) * num_grid) + (i + 1); // bottom right
-      size_t dx_pc = offset + ((j + 1) * num_grid) + (i + 1); // top right
-      size_t dx_pd = offset + ((j + 1) * num_grid) + (i + 0); // top left
+        size_t dx_pa = offset + ((j + 0) * num_grid) + (i + 0); // bottom left
+        size_t dx_pb = offset + ((j + 0) * num_grid) + (i + 1); // bottom right
+        size_t dx_pc = offset + ((j + 1) * num_grid) + (i + 1); // top right
+        size_t dx_pd = offset + ((j + 1) * num_grid) + (i + 0); // top left
 
-      Particle* pa = particles[dx_pa];
-      Particle* pb = particles[dx_pb];
-      Particle* pc = particles[dx_pc];
-      Particle* pd = particles[dx_pd];
+        Particle* pa = particles[dx_pa];
+        Particle* pb = particles[dx_pb];
+        Particle* pc = particles[dx_pc];
+        Particle* pd = particles[dx_pd];
 
-      Spring* sa = new Spring(pa, pb);
-      Spring* sb = new Spring(pb, pc);
-      Spring* sc = new Spring(pc, pd);
-      Spring* sd = new Spring(pd, pa);
+        Spring* sa = new Spring(pa, pb);
+        Spring* sb = new Spring(pb, pc);
+        Spring* sc = new Spring(pc, pd);
+        Spring* sd = new Spring(pd, pa);
 
-      particles.addSpring(sa);
-      particles.addSpring(sb);
-      particles.addSpring(sc);
-      particles.addSpring(sd);
+        particles.addSpring(sa);
+        particles.addSpring(sb);
+        particles.addSpring(sc);
+        particles.addSpring(sd);
+      }
     }
+    offset += num_grid * num_grid;
   }
   
 
@@ -93,6 +95,7 @@ void Room::createRoom() {
   printf("grid_size: %f\n", grid_size);
   printf("num vertices: %ld\n", vertices.size());
 }
+
 
 // positions the vertices based on the current state.
 void Room::position() {
@@ -105,6 +108,11 @@ void Room::position() {
     for(int i = 0; i < num_grid; ++i) {
       size_t dx = dx_offset + j * num_grid + i;
       Particle* p = particles[dx];
+
+      if(j == 0 || j == (num_grid-1) || i == 0 || i == (num_grid-1) ) {
+        p->enabled = false;
+      }
+
       set(p->pos, 
           -(room_size * 0.5f) + (i * grid_size), 
           -(room_size * 0.5f) + (j * grid_size), 
@@ -122,6 +130,11 @@ void Room::position() {
     for(int i = 0; i < num_grid; ++i) {
       size_t dx = dx_offset + j * num_grid + i;
       Particle* p = particles[dx];
+
+      if(j == 0 || j == (num_grid-1) || i == 0 || i == (num_grid-1) ) {
+        p->enabled = false;
+      }
+
       set(p->pos, 
           (room_size * 0.5f) - grid_size,
           -(room_size * 0.5f) + (i * grid_size), 
@@ -139,6 +152,11 @@ void Room::position() {
     for(int i = 0; i < num_grid; ++i) {
       size_t dx = dx_offset + j * num_grid + i;
       Particle* p = particles[dx];
+
+      if(j == 0 || j == (num_grid-1) || i == 0 || i == (num_grid-1) ) {
+        p->enabled = false;
+      }
+
       set(p->pos, 
           -(room_size * 0.5f),
           -(room_size * 0.5f) + (i * grid_size), 
@@ -156,6 +174,11 @@ void Room::position() {
     for(int i = 0; i < num_grid; ++i) {
       size_t dx = dx_offset + j * num_grid + i;
       Particle* p = particles[dx];
+
+      if(j == 0 || j == (num_grid-1) || i == 0 || i == (num_grid-1) ) {
+        p->enabled = false;
+      }
+
       set(p->pos, 
           -(room_size * 0.5f) + (i * grid_size), 
           -(room_size * 0.5f) + (j * grid_size),
@@ -173,6 +196,11 @@ void Room::position() {
     for(int i = 0; i < num_grid; ++i) {
       size_t dx = dx_offset + j * num_grid + i;
       Particle* p = particles[dx];
+
+      if(j == 0 || j == (num_grid-1) || i == 0 || i == (num_grid-1) ) {
+        p->enabled = false;
+      }
+
       set(p->pos, 
           -(room_size * 0.5f) + (i * grid_size), 
           -(room_size * 0.5f),
@@ -190,6 +218,11 @@ void Room::position() {
     for(int i = 0; i < num_grid; ++i) {
       size_t dx = dx_offset + j * num_grid + i;
       Particle* p = particles[dx];
+
+      if(j == 0 || j == (num_grid-1) || i == 0 || i == (num_grid-1) ) {
+        p->enabled = false;
+      }
+
       set(p->pos, 
           -(room_size * 0.5f) + (i * grid_size), 
           (room_size * 0.5f) - grid_size,
@@ -214,7 +247,11 @@ void Room::updateVertices() {
   size_t vertex_offset = 0;
 
   Particle *pa, *pb, *pc, *pd = NULL;
-  
+
+  vec3 norm;
+  vec3 dir_a;
+  vec3 dir_b;
+
   for(int k = 0; k < 6; ++k) {
 
     for(int j = 0; j < num_grid - 1; ++j) {
@@ -231,22 +268,40 @@ void Room::updateVertices() {
         pd = particles[particle_d];
 
         // bottom right triangle
-        VertexP& va = vertices[vertex_offset++];
-        VertexP& vb = vertices[vertex_offset++];      
-        VertexP& vc = vertices[vertex_offset++];
+        // -----------------
+        RoomParticleType& va = vertices[vertex_offset++];
+        RoomParticleType& vb = vertices[vertex_offset++];      
+        RoomParticleType& vc = vertices[vertex_offset++];
 
         va.set(pa->pos);
         vb.set(pb->pos);
         vc.set(pc->pos);
+
+        // norm 
+        dir_a = pa->pos - pb->pos;
+        dir_b = pa->pos - pc->pos;
+        norm = cross(dir_a, dir_b);
+        va.setNorm(norm);
+        vb.setNorm(norm);
+        vc.setNorm(norm);
       
         // top left triangle
-        VertexP& vd = vertices[vertex_offset++];
-        VertexP& ve = vertices[vertex_offset++];
-        VertexP& vf = vertices[vertex_offset++];
+        // -----------------
+        RoomParticleType& vd = vertices[vertex_offset++];
+        RoomParticleType& ve = vertices[vertex_offset++];
+        RoomParticleType& vf = vertices[vertex_offset++];
       
         vd.set(pa->pos);
         ve.set(pc->pos);
         vf.set(pd->pos);
+
+        dir_a = pa->pos - pc->pos;
+        dir_b = pa->pos - pd->pos;
+        norm = cross(dir_a, dir_b);
+        vd.setNorm(norm);
+        ve.setNorm(norm);
+        vf.setNorm(norm);
+      
       }
     }
     particle_offset += (num_grid * num_grid) ;
