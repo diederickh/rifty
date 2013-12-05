@@ -1,10 +1,10 @@
 #include <iostream>
- 
+
 #if defined(GLFW_INCLUDE_GLCOREARB)
 #  undef GLFW_INCLUDE_GLCOREARB
 #  define GFLFW_INCLUDE_NONE
 #endif
- 
+
 #include <GLXW/glxw.h>
 #include <GLFW/glfw3.h>
 
@@ -45,9 +45,6 @@ int main() {
   GLFWwindow* win = NULL;
   int w = 1280;
   int h = 720;
- 
-  Road road;
-  road.setup();
 
   win = glfwCreateWindow(w, h, "openGL", NULL, NULL);
   if(!win) {
@@ -55,6 +52,22 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
+  glfwSetFramebufferSizeCallback(win, resize_callback);
+  glfwSetKeyCallback(win, key_callback);
+  glfwMakeContextCurrent(win);
+  glfwSwapInterval(1);
+ 
+  if(glxwInit() != 0) {
+    printf("error: cannot initialize glxw.\n");
+    ::exit(EXIT_FAILURE);
+  }
+
+  
+  Road road;
+  road.setup();
+  rifty.setup();
+
+#if 0
   Spline<vec3, 3> spline;
   spline.add(vec3(0.0, 0.0, 0.0));  
   spline.add(vec3(1.0, 1.0, 0.0));  
@@ -67,16 +80,9 @@ int main() {
     printf("%f, %f, %f for %f\n", v[0], v[1], v[2], p);
     p += 0.01;
   }
+#endif
  
-  glfwSetFramebufferSizeCallback(win, resize_callback);
-  glfwSetKeyCallback(win, key_callback);
-  glfwMakeContextCurrent(win);
-  glfwSwapInterval(1);
- 
-  if(glxwInit() != 0) {
-    printf("error: cannot initialize glxw.\n");
-    ::exit(EXIT_FAILURE);
-  }
+
  
   while(!glfwWindowShouldClose(win)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

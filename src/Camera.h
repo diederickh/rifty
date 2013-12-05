@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Utils.h"
 
+using namespace glm;
+
 class Camera {
  public:
   Camera();

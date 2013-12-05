@@ -1,10 +1,10 @@
 #include "Camera.h"
 
 Camera::Camera() 
-  :projection_matrix(glm::perspective(35.0f, 1.0f, 0.1f, 100.0f))
+  :projection_matrix(glm::perspective(65.0f, 4.0f/3.0f, 0.1f, 100.0f))
   ,must_update(false)
 {
-  translate(0,0,5);
+  translate(0,0,15);
   vm();
 }
 
@@ -12,9 +12,9 @@ Camera::~Camera() {
 }
 
 void Camera::translate(float x, float y, float z) {
-  position[0] += -x;
-  position[1] += -y;
-  position[2] += -z;
+  position[0] += x;
+  position[1] += y;
+  position[2] += z;
   must_update = true;
 }
 
@@ -33,7 +33,10 @@ void Camera::update() {
     return;
   }
 
-  view_matrix[0][3] = position[0];
-  view_matrix[1][3] = position[1];
-  view_matrix[2][3] = position[2];
+  view_matrix[3][0] = -position[0];
+  view_matrix[3][1] = -position[1];
+  view_matrix[3][2] = -position[2];
+
+  must_update = false;
+  print(view_matrix);
 }

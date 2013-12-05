@@ -15,15 +15,18 @@
 
 #include "Utils.h"
 #include "Camera.h"
+#include <room/Room.h>
 
 class Rifty {
  public:
   Rifty();
   ~Rifty();
+  bool setup();
   void update();
   void draw();
  public:
   Camera cam;
+  Room room;
 };
 
 #endif

@@ -11,6 +11,9 @@ set(source_files
   ${base_dir}/src/Road.cpp
   ${base_dir}/src/Rifty.cpp
   ${base_dir}/src/Camera.cpp
+  ${base_dir}/src/Particles.cpp
+  ${base_dir}/src/room/Room.cpp
+  ${base_dir}/src/room/RoomDrawer.cpp
   ${extern_dir}/src/GLXW/glxw.c
 )
 
@@ -31,6 +34,7 @@ set(libraries
 
 include_directories(
   ${extern_dir}/include
+  ${base_dir}/src
 )
 
 add_executable(rifty ${source_files})
