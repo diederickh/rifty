@@ -1,6 +1,9 @@
+//#include "PCH.h"
+#include <GLFW/glfw3.h>
+#include <OpenGL/gl3.h>
 #include <assert.h>
 #include <stdio.h>
-#include <room/RGBShift.h>
+#include "room/RGBShift.h"
 
 RGBShift::RGBShift() 
   :fbo(0)
@@ -29,7 +32,6 @@ bool RGBShift::setup() {
   }
 
   glGenVertexArrays(1, &vao);;
-
   return true;
 }
 

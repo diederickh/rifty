@@ -9,7 +9,7 @@
 #ifndef ROOM_DRAWER_H
 #define ROOM_DRAWER_H
 
-#include <OpenGL/gl3.h>
+#include <GLFW/glfw3.h>
 #include "Vertices.h"
 #include "Types.h"
 #include <room/RGBShift.h>

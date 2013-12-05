@@ -1,7 +1,6 @@
 #ifndef RGBSHIFT_H
 #define RGBSHIFT_H
 
-#include <OpenGL/gl3.h>
 #include "Utils.h"
 #include "tinylib.h"
 

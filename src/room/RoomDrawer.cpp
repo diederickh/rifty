@@ -1,8 +1,7 @@
-#include <assert.h>
-#include "Types.h"
-#include "tinylib.h"
+#include "PCH.h"
 #include <room/RoomDrawer.h>
 #include <room/Room.h>
+
 
 RoomDrawer::RoomDrawer(Room& room) 
   :room(room)
@@ -49,6 +48,23 @@ bool RoomDrawer::setup() {
 }
 
 bool RoomDrawer::createShader() {
+    
+    
+    std::string vsFile = GetFromResources("shaders/GBufferClearPass.vertex");
+    std::string fsFile = GetFromResources( "shaders/GBufferClearPass.fragment" );
+    Shader* vs = new Shader( GL_VERTEX_SHADER, ROOM_VS, strlen(ROOM_VS) );
+    Shader* fs = new Shader( GL_FRAGMENT_SHADER, ROOM_FS, strlen(ROOM_FS) );
+//    Shader* vs = new Shader( GL_VERTEX_SHADER, vsFile.c_str() );
+//    Shader* fs = new Shader( GL_FRAGMENT_SHADER, fsFile.c_str() );
+    ShaderProgram* prog2 = new ShaderProgram();
+    prog2->AttachShader( vs );
+    prog2->AttachShader( fs );
+    prog2->Link();
+    prog2->PrintParameters();
+    delete vs;
+    delete fs;
+    delete prog2;
+    
   vert = rx_create_shader(GL_VERTEX_SHADER, ROOM_VS);
   frag = rx_create_shader(GL_FRAGMENT_SHADER, ROOM_FS);
   frag_line = rx_create_shader(GL_FRAGMENT_SHADER, ROOM_LINE_FS);
