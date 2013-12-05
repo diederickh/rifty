@@ -8,6 +8,8 @@
 
 struct RiftyConfig {
   std::string data_path;
+  int win_w;
+  int win_h;
 };
 
 extern RiftyConfig rifty_config;

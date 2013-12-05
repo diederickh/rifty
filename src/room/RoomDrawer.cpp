@@ -11,6 +11,8 @@ RoomDrawer::RoomDrawer(Room& room)
   ,prog(0)
   ,vert(0)
   ,frag(0)
+  ,frag_line(0)
+  ,prog_line(0)
   ,u_pm(-1)
   ,u_vm(-1)
   ,u_mm(-1)
@@ -39,12 +41,17 @@ bool RoomDrawer::setup() {
     return false;
   }
 
+  if(!rgb_shift.setup()) {
+    return false;
+  }
+
   return true;
 }
 
 bool RoomDrawer::createShader() {
   vert = rx_create_shader(GL_VERTEX_SHADER, ROOM_VS);
   frag = rx_create_shader(GL_FRAGMENT_SHADER, ROOM_FS);
+  frag_line = rx_create_shader(GL_FRAGMENT_SHADER, ROOM_LINE_FS);
   prog = rx_create_program(vert, frag);
   glBindAttribLocation(prog, 0, "a_pos");
   glBindAttribLocation(prog, 1, "a_norm");
@@ -58,6 +65,12 @@ bool RoomDrawer::createShader() {
   assert(u_vm >= 0);
   assert(u_mm >= 0);
   assert(u_nm >= 0);
+
+  // line program
+  prog_line = rx_create_program(vert, frag_line);
+  glBindAttribLocation(prog_line, 0, "a_pos");
+  glBindAttribLocation(prog_line, 1, "a_norm");
+  glLinkProgram(prog_line);
 
   return true;
 }
@@ -77,15 +90,31 @@ void RoomDrawer::update() {
 }
 
 void RoomDrawer::draw(float* pm, float* vm, float* nm, float* mm) {
+
   glBindVertexArray(vao);
+
+  // draw colors
   glUseProgram(prog);
   glUniformMatrix4fv(u_pm, 1, GL_FALSE, pm);
   glUniformMatrix4fv(u_vm, 1, GL_FALSE, vm);
   glUniformMatrix4fv(u_mm, 1, GL_FALSE, mm);
   glUniformMatrix3fv(u_nm, 1, GL_FALSE, nm);
 
-  glPointSize(3.0f);
-  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   glDrawArrays(GL_TRIANGLES, 0, room.getVertices().size() );
-  //glDrawArrays(GL_POINTS, 0, room.getVertices().size());
+
+  // lines
+  glUseProgram(prog_line);
+  glUniformMatrix4fv(glGetUniformLocation(prog_line, "u_pm"), 1, GL_FALSE, pm);
+  glUniformMatrix4fv(glGetUniformLocation(prog_line, "u_vm"), 1, GL_FALSE, vm);
+  glUniformMatrix4fv(glGetUniformLocation(prog_line, "u_mm"), 1, GL_FALSE, mm);
+  glUniformMatrix3fv(glGetUniformLocation(prog_line, "u_nm"), 1, GL_FALSE, nm);
+
+  //  glPointSize(3.0f);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glDrawArrays(GL_TRIANGLES, 0, room.getVertices().size() );
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+  rgb_shift.apply();
+  rgb_shift.draw();
 }

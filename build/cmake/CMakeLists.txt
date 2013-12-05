@@ -15,6 +15,7 @@ set(source_files
   ${base_dir}/src/room/Room.cpp
   ${base_dir}/src/room/RoomDrawer.cpp
   ${base_dir}/src/room/RoomEffect.cpp
+  ${base_dir}/src/room/RGBShift.cpp
   ${extern_dir}/src/GLXW/glxw.c
 )
 

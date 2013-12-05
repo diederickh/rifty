@@ -19,8 +19,8 @@ RoomEffectNoise::RoomEffectNoise(Room& room)
 
 void RoomEffectNoise::update(float dt) {
   static float time = 0.0f;
-  time += (dt * 0.1);
-  float f = 1.1f;
+  time += (dt * 0.01);
+  float f = 10.1f;
   Particles& p = room.getParticles();
   float dx = 0.0f;
   for(Particles::iterator it = p.begin(); it != p.end(); ++it) {

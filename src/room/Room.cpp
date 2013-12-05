@@ -4,7 +4,7 @@
 
 Room::Room() 
   :room_size(15.0f)
-  ,num_grid(20)
+  ,num_grid(15)
   ,grid_size(room_size / num_grid)
   ,drawer(*this)
   ,effect_noise(NULL)

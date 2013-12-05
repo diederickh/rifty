@@ -28,6 +28,8 @@ void resize_callback(GLFWwindow* window, int width, int height);
 int main() {
 
   rifty_config.data_path = "/Users/roxlu/Documents/programming/cpp/tests/oculus/install/bin/data/";
+  rifty_config.win_w = 800;
+  rifty_config.win_h = 600;
 
   glfwSetErrorCallback(error_callback);
  
@@ -43,10 +45,7 @@ int main() {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   
   GLFWwindow* win = NULL;
-  int w = 1280;
-  int h = 720;
-
-  win = glfwCreateWindow(w, h, "openGL", NULL, NULL);
+  win = glfwCreateWindow(rifty_config.win_w, rifty_config.win_h, "openGL", NULL, NULL);
   if(!win) {
     glfwTerminate();
     exit(EXIT_FAILURE);
