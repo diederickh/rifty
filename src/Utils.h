@@ -47,23 +47,20 @@ static char* FileRead( const char* filename )
 	char* content = NULL;
 	int count = 0;
     
-//	if( !filename )
+    fp = fopen( filename, "rt" );
+    if( fp )
     {
-		fp = fopen( filename, "rt" );
-		if( fp )
-		{
-			fseek( fp, 0, SEEK_END );
-			count = ftell( fp );
-			rewind( fp );
-			if( count > 0 )
-			{
-				content = new char[count+1];
-				count = fread( content, sizeof(char), count, fp );
-				content[count] = '\0';
-			}
-			fclose( fp );
-		}
-	}
+        fseek( fp, 0, SEEK_END );
+        count = ftell( fp );
+        rewind( fp );
+        if( count > 0 )
+        {
+            content = new char[count+1];
+            count = fread( content, sizeof(char), count, fp );
+            content[count] = '\0';
+        }
+        fclose( fp );
+    }
     
 	return content;
 }
