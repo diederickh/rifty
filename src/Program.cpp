@@ -47,7 +47,7 @@ void ShaderProgram::DetachShader( Shader* shader )
 
 bool ShaderProgram::Link()
 {
-	glLinkProgram(id);
+	glLinkProgram( id );
 
     GLint success;
     glGetProgramiv( id, GL_LINK_STATUS, &success );
@@ -72,6 +72,15 @@ bool ShaderProgram::Link()
     // Bind attributes
     for( int i=0; i<numAttributes; i++ )
         glBindAttribLocation( id, attrArray[i]->location, attrArray[i]->name.c_str() );
+    
+    // Detach after linking
+    for( int i=0; i<shadersArray.size(); i++ )
+    {
+        DetachShader( shadersArray[i] );
+    }
+    
+    
+    return true;
 }
 
 

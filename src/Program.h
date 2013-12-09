@@ -35,6 +35,7 @@ protected:
     ShaderAttribute**                   attrArray;
 	ShaderAttributeMap                  attrMap;
 
+    std::vector<Shader*>                shadersArray;
     
 public:
 	ShaderProgram();

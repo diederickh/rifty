@@ -6,25 +6,25 @@ Shader::Shader()
 }
 
 Shader::Shader( GLenum shaderType )
-: source(NULL)
-, type(shaderType)
+: type(shaderType)
 , id(0)
+, source(NULL)
 {
 }
 
 Shader::Shader( GLenum shaderType, const char* filename )
-: source(NULL)
-, type(shaderType)
+: type(shaderType)
 , id(0)
+, source(NULL)
 {
 	id = glCreateShader( shaderType );
 	Init( shaderType, filename );
 }
 
 Shader::Shader( GLenum shaderType, const char* source, int length )
-: source(NULL)
-, type(shaderType)
+: type(shaderType)
 , id(0)
+, source(NULL)
 {
 	id = glCreateShader( shaderType );
 	Init( shaderType, source, length );
@@ -32,24 +32,20 @@ Shader::Shader( GLenum shaderType, const char* source, int length )
 
 Shader::~Shader()
 {
-    delete [] source;
 	glDeleteShader( id );
 }
 
 bool Shader::Init( GLenum shaderType, const char* filename )
 {
-	Load( filename );
-	Compile();
+	if( !Load( filename ) ) return false;
+	if( !Compile() ) return false;
+    delete [] source;
 	return true;
 }
 
 bool Shader::Init( GLenum shaderType, const char* source, int lengthInBytes )
 {
-    this->source = new char[ lengthInBytes ];
-    memcpy( this->source, source, lengthInBytes );
-    const char* code = source;
-	glShaderSource( id , 1, &code, NULL );
-
+	glShaderSource( id , 1, &source, NULL );
 	if( !Compile() ) return false;
 	return true;
 }
@@ -57,17 +53,12 @@ bool Shader::Init( GLenum shaderType, const char* source, int lengthInBytes )
 bool Shader::Load( const char* filename )
 {
 	source = FileRead( filename );
-    PrintInfoLog();
-	if( source )
-        return true;
+	if( source ) return true;
 	return false;
 }
 
 bool Shader::Compile()
 {
-	if( !source )
-        return false;
-
 	glCompileShader( id );
 
 	int param;
